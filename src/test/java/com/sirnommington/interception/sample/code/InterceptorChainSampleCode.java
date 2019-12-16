@@ -17,6 +17,12 @@ public class InterceptorChainSampleCode {
         });
     }
 
+    public Integer withTypedOutput() {
+        return chain.<Integer>execute(new InterceptorContext().operationName("getUsers"), () -> {
+            return new Integer(1337);
+        });
+    }
+
     public Object withInputAndOutput() {
         return chain.execute(new InterceptorContext().operationName("getUsers"), (input) -> {
             return null;
