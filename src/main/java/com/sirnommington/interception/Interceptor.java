@@ -1,7 +1,7 @@
 package com.sirnommington.interception;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 public interface Interceptor {
-    <T> T execute(InterceptorContext context, Supplier<T> operation);
+    <T, R> R execute(Operation<T> context, Function<T, R> operation);
 }
