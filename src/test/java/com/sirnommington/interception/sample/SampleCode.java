@@ -1,13 +1,14 @@
-package com.sirnommington.interception.sample.code;
+package com.sirnommington.interception.sample;
 
 import com.sirnommington.interception.InterceptorChain;
-import com.sirnommington.interception.sample.LogBeginEndInterceptor;
+import com.sirnommington.interception.sample.interceptors.LoggingInterceptor;
+import com.sirnommington.interception.sample.interceptors.TimingInterceptor;
 
 public class SampleCode {
 
-    // TODO Add more interceptors to the default chain
     private final InterceptorChain chain = InterceptorChain.builder()
-            .interceptor(new LogBeginEndInterceptor())
+            .interceptor(new LoggingInterceptor())
+            .interceptor(new TimingInterceptor())
             .build();
 
     public Integer withSupplier() {
