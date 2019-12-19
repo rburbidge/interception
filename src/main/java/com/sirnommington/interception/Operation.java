@@ -53,7 +53,7 @@ public class Operation<T> {
 
     private <R> R executeImpl(Function<T, R> operation) {
         if(interceptors.hasNext()) {
-            Interceptor cur = interceptors.next();
+            Interceptor<T> cur = interceptors.next();
             return cur.execute(this, operation);
         }
 

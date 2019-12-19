@@ -5,9 +5,9 @@ import com.sirnommington.interception.Operation;
 
 import java.util.function.Function;
 
-public class TimingInterceptor implements Interceptor {
+public class TimingInterceptor implements Interceptor<Object> {
     @Override
-    public <T, R> R execute(Operation<T> context, Function<T, R> operation) {
+    public <R> R execute(Operation<Object> context, Function<Object, R> operation) {
         long startTime = System.nanoTime();
 
         try {
