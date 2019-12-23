@@ -1,11 +1,11 @@
 package com.sirnommington.interception.sample.interceptors;
 
-import com.sirnommington.interception.Interceptor;
-import com.sirnommington.interception.InterceptorOperationContext;
+import com.sirnommington.interception.interceptor.Interceptor;
+import com.sirnommington.interception.interceptor.ContinuableOperation;
 
 public class TimingInterceptor implements Interceptor {
     @Override
-    public Object execute(InterceptorOperationContext operation) {
+    public Object execute(ContinuableOperation operation) {
         long startTime = System.nanoTime();
 
         try {

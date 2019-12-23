@@ -1,7 +1,5 @@
 package com.sirnommington.interception.sample.interceptors.authretry;
 
-import com.sirnommington.interception.Interceptor;
-import com.sirnommington.interception.Operation;
 import com.sirnommington.interception.OperationPipeline;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,9 +7,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;

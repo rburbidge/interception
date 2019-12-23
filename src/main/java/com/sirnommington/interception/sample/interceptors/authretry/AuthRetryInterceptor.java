@@ -1,11 +1,8 @@
 package com.sirnommington.interception.sample.interceptors.authretry;
 
-import com.sirnommington.interception.Interceptor;
-import com.sirnommington.interception.InterceptorOperationContext;
-import com.sirnommington.interception.Operation;
+import com.sirnommington.interception.interceptor.Interceptor;
+import com.sirnommington.interception.interceptor.ContinuableOperation;
 import lombok.Data;
-
-import java.util.function.Function;
 
 /**
  * Sets an authentication token on the request, and retries with a new token if the initial request fails.
@@ -20,7 +17,7 @@ public class AuthRetryInterceptor implements Interceptor {
     }
 
     @Override
-    public Object execute(InterceptorOperationContext operation) {
+    public Object execute(ContinuableOperation operation) {
         AuthenticatedRequest request = (AuthenticatedRequest)operation.getInput();
 
         try {
