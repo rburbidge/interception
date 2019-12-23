@@ -20,9 +20,9 @@ public class Operation<T> {
     @Getter
     private T input;
 
-    public <R> Operation<R> input(R input) {
+    public <TNew> Operation<TNew> input(TNew input) {
         this.input = (T)input;
-        return (Operation<R>)this;
+        return (Operation<TNew>)this;
     }
 
     @Setter
