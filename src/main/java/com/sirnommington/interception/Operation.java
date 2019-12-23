@@ -8,16 +8,18 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@Accessors(fluent = true)
 public class Operation implements InterceptorOperationContext, ExecutableOperation {
     private final Iterator<Interceptor> interceptors;
 
-    private final String operationName;
+    @Setter
+    private String operationName;
+
     private Object input;
     private Function<Object, Object> func;
 
-    private Operation(Iterator<Interceptor> interceptors, String operationName) {
+    Operation(Iterator<Interceptor> interceptors) {
         this.interceptors = interceptors;
-        this.operationName = operationName;
     }
 
     /////////////////////////////////////////
@@ -76,28 +78,8 @@ public class Operation implements InterceptorOperationContext, ExecutableOperati
 
     private  <T, R> R executeImpl(T input, Function<T, R> func) {
         this.input = input;
-        this.func = (Object objInput) -> {
-            return func.apply((T) objInput);
-        };
+        this.func = (objInput) -> func.apply((T) objInput);
 
         return (R)execute();
-    }
-
-    /////////////////////
-    // Builder methods //
-    /////////////////////
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    @Accessors(fluent = true)
-    @Setter
-    public static class Builder {
-        private Iterator<Interceptor> interceptors;
-        private String operationName;
-        public Operation build() {
-            return new Operation(interceptors, operationName);
-        }
     }
 }

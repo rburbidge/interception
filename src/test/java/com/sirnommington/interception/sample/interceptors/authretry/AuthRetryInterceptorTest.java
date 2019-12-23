@@ -2,6 +2,7 @@ package com.sirnommington.interception.sample.interceptors.authretry;
 
 import com.sirnommington.interception.Interceptor;
 import com.sirnommington.interception.Operation;
+import com.sirnommington.interception.OperationPipeline;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,13 +26,14 @@ public class AuthRetryInterceptorTest {
     @Mock private AuthenticatedRequest request;
 
     private AuthRetryInterceptor interceptor;
-    private List<Interceptor> interceptors;
+    private OperationPipeline pipeline;
 
     @Before
     public void before() {
         interceptor = new AuthRetryInterceptor(tokenProvider);
-        interceptors = new ArrayList<>();
-                interceptors.add(interceptor);
+        pipeline = OperationPipeline.builder()
+                .interceptor(interceptor)
+                .build();
     }
 
     @Test
@@ -39,10 +41,8 @@ public class AuthRetryInterceptorTest {
         when(tokenProvider.getCachedToken()).thenReturn("cachedToken");
         when(operation.apply(any())).thenReturn("result");
 
-        String result = Operation.builder()
-                .interceptors(interceptors.iterator())
+        String result = pipeline.start()
                 .operationName("doOperation")
-                .build()
                 .execute(request, operation);
 
         verify(tokenProvider).getCachedToken();
@@ -59,10 +59,8 @@ public class AuthRetryInterceptorTest {
                 .thenThrow(new AuthRetryInterceptor.AuthenticationException())
                 .thenReturn("result");
 
-        String result = Operation.builder()
-                .interceptors(interceptors.iterator())
+        String result = pipeline.start()
                 .operationName("doOperation")
-                .build()
                 .execute(request, operation);
 
         verify(tokenProvider).getCachedToken();
