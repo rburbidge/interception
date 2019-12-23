@@ -19,6 +19,7 @@ public class SampleCode {
     }
 
     public void test() {
+        // TODO Change build().execute() pattern to just .execute()
         String functionResult =  Operation.builder()
                 .operationName("functionOperation")
                 .build()

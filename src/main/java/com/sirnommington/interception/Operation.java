@@ -1,6 +1,5 @@
 package com.sirnommington.interception;
 
-import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -9,15 +8,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class Operation implements InterceptorOperationContext {
+public class Operation implements InterceptorOperationContext, ExecutableOperation {
     private final Iterator<Interceptor> interceptors;
 
-    @Getter
     private final String operationName;
-
-    @Getter
     private Object input;
-
     private Function<Object, Object> func;
 
     private Operation(Iterator<Interceptor> interceptors, String operationName) {
@@ -25,14 +20,45 @@ public class Operation implements InterceptorOperationContext {
         this.operationName = operationName;
     }
 
+    /////////////////////////////////////////
+    // InterceptorOperationContext methods //
+    /////////////////////////////////////////
+
+    @Override
+    public Object getInput() {
+        return input;
+    }
+
+    @Override
+    public String getOperationName() {
+        return operationName;
+    }
+
+    @Override
+    public Object execute() {
+        if(interceptors.hasNext()) {
+            Interceptor cur = interceptors.next();
+            return cur.execute(this);
+        }
+
+        return func.apply(input);
+    }
+
+    /////////////////////////////////
+    // ExecutableOperation methods //
+    /////////////////////////////////
+
+    @Override
     public <T, R> R execute(T input, Function<T, R> func) {
         return this.executeImpl(input, func);
     }
 
+    @Override
     public <R> R execute(Supplier<R> func) {
         return this.executeImpl(null, (unused) -> func.get());
     }
 
+    @Override
     public <T> void execute(T input, Consumer<T> func) {
         this.executeImpl(input, (theInput) -> {
             func.accept(theInput);
@@ -40,6 +66,7 @@ public class Operation implements InterceptorOperationContext {
         });
     }
 
+    @Override
     public void execute(Runnable func) {
         this.executeImpl(null, (unused) -> {
             func.run();
@@ -53,17 +80,12 @@ public class Operation implements InterceptorOperationContext {
             return func.apply((T) objInput);
         };
 
-        return execute();
+        return (R)execute();
     }
 
-    public <R> R execute() {
-        if(interceptors.hasNext()) {
-            Interceptor cur = interceptors.next();
-            return (R) cur.execute(this);
-        }
-
-        return (R) func.apply(input);
-    }
+    /////////////////////
+    // Builder methods //
+    /////////////////////
 
     public static Builder builder() {
         return new Builder();
