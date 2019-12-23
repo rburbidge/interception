@@ -1,14 +1,16 @@
-package com.sirnommington.interception.sample.code;
+package com.sirnommington.interception.sample;
 
 import com.sirnommington.interception.InterceptorChain;
-import com.sirnommington.interception.sample.LogBeginEndInterceptor;
+import com.sirnommington.interception.sample.interceptors.authretry.AuthRetryInterceptor;
+import com.sirnommington.interception.sample.interceptors.LoggingInterceptor;
+import com.sirnommington.interception.sample.interceptors.TimingInterceptor;
 
 public class SampleCode {
 
-    // TODO Add more interceptors to the default chain
-    private final InterceptorChain chain = InterceptorChain.builder()
-            .interceptor(new LogBeginEndInterceptor())
-            .build();
+    private final InterceptorChain chain = new InterceptorChain()
+            .interceptor(new AuthRetryInterceptor(null))
+            .interceptor(new LoggingInterceptor())
+            .interceptor(new TimingInterceptor());
 
     public Integer withSupplier() {
         return chain.operation("getUsers")

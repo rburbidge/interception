@@ -10,31 +10,30 @@ import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InterceptorChainTest {
 
-    private Interceptor interceptor = Mockito.spy(new Interceptor() {
+    private Interceptor interceptor = Mockito.spy(new Interceptor<Object>() {
         @Override
-        public <T, R> R execute(Operation<T> context, Function<T, R> operation) {
+        public <R> R execute(Operation<Object> context, Function<Object, R> operation) {
             return context.execute(operation);
         }
     });
 
-    @Test
-    public void function_noInterceptors() {
-        String expected = "The Result";
-        Supplier<String> operation = () -> {
-            return expected;
-        };
+    @Test(expected = UnsupportedOperationException.class)
+    public void supplier_noInterceptors() {
+        Supplier operation = Mockito.mock(Supplier.class);
 
-        InterceptorChain chain = InterceptorChain.builder()
-                .build();
-        String actual = chain.operation("operationName").execute(() -> operation.get());
+        InterceptorChain chain = new InterceptorChain();
 
-        assertEquals(expected, actual);
+        try {
+            chain.operation("operationName").execute(operation);
+        } finally {
+            verifyZeroInteractions(operation);
+            verify(operation, never()).get();
+        }
     }
 
     @Test
@@ -44,9 +43,8 @@ public class InterceptorChainTest {
             return expected;
         };
 
-        InterceptorChain chain = InterceptorChain.builder()
-                .interceptor(interceptor)
-                .build();
+        InterceptorChain chain = new InterceptorChain()
+                .interceptor(interceptor);
         Operation<Void> operationContext = (Operation<Void>)chain.operation("operationName");
         String actual = operationContext.execute(operation);
 
@@ -61,11 +59,10 @@ public class InterceptorChainTest {
             return expected;
         };
 
-        InterceptorChain chain = InterceptorChain.builder()
+        InterceptorChain chain = new InterceptorChain()
                 .interceptor(interceptor)
                 .interceptor(interceptor)
-                .interceptor(interceptor)
-                .build();
+                .interceptor(interceptor);
         Operation<String> operationContext = (Operation<String>)chain.operation("operationName");
         String actual = operationContext.execute(operation);
 
@@ -80,9 +77,8 @@ public class InterceptorChainTest {
             return expected;
         };
 
-        InterceptorChain chain = InterceptorChain.builder()
-                .interceptor(interceptor)
-                .build();
+        InterceptorChain chain = new InterceptorChain()
+                .interceptor(interceptor);
         Operation<Void> operationContext = (Operation<Void>)chain.operation("operationName");
         String actual = operationContext.execute(operation);
 
