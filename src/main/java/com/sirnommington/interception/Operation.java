@@ -1,7 +1,6 @@
 package com.sirnommington.interception;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -10,53 +9,73 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-@Accessors(fluent = true)
-@NoArgsConstructor
-public class Operation<T> {
-    @Getter
-    @Setter
-    private String operationName;
+public class Operation implements InterceptorOperationContext {
+    private final Iterator<Interceptor> interceptors;
 
     @Getter
-    private T input;
+    private final String operationName;
 
-    public <TNew> Operation<TNew> input(TNew input) {
-        this.input = (T)input;
-        return (Operation<TNew>)this;
+    @Getter
+    private Object input;
+
+    private Function<Object, Object> func;
+
+    private Operation(Iterator<Interceptor> interceptors, String operationName) {
+        this.interceptors = interceptors;
+        this.operationName = operationName;
     }
 
-    @Setter
-    private Iterator<Interceptor> interceptors;
-
-    public <R> R execute(Function<T, R> operation) {
-       return executeImpl(operation);
+    public <T, R> R execute(T input, Function<T, R> func) {
+        return this.executeImpl(input, func);
     }
 
-    public <R> R execute(Supplier<R> operation) {
-        return executeImpl(
-                (unused) -> operation.get());
+    public <R> R execute(Supplier<R> func) {
+        return this.executeImpl(null, (unused) -> func.get());
     }
 
-    public void execute(Consumer<T> operation) {
-        this.executeImpl((input) -> {
-            operation.accept(input);
+    public <T> void execute(T input, Consumer<T> func) {
+        this.executeImpl(input, (theInput) -> {
+            func.accept(theInput);
             return null;
         });
     }
 
-    public void execute(Runnable operation) {
-        this.executeImpl((unused) -> {
-            operation.run();
+    public void execute(Runnable func) {
+        this.executeImpl(null, (unused) -> {
+            func.run();
             return null;
         });
     }
 
-    private <R> R executeImpl(Function<T, R> operation) {
+    private  <T, R> R executeImpl(T input, Function<T, R> func) {
+        this.input = input;
+        this.func = (Object objInput) -> {
+            return func.apply((T) objInput);
+        };
+
+        return execute();
+    }
+
+    public <R> R execute() {
         if(interceptors.hasNext()) {
-            Interceptor<T> cur = interceptors.next();
-            return cur.execute(this, operation);
+            Interceptor cur = interceptors.next();
+            return (R) cur.execute(this);
         }
 
-        return operation.apply(this.input);
+        return (R) func.apply(input);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    @Accessors(fluent = true)
+    @Setter
+    public static class Builder {
+        private Iterator<Interceptor> interceptors;
+        private String operationName;
+        public Operation build() {
+            return new Operation(interceptors, operationName);
+        }
     }
 }

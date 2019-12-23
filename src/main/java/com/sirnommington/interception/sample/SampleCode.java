@@ -1,36 +1,39 @@
 package com.sirnommington.interception.sample;
 
-import com.sirnommington.interception.InterceptorChain;
+import com.sirnommington.interception.Interceptor;
+import com.sirnommington.interception.Operation;
 import com.sirnommington.interception.sample.interceptors.authretry.AuthRetryInterceptor;
 import com.sirnommington.interception.sample.interceptors.LoggingInterceptor;
 import com.sirnommington.interception.sample.interceptors.TimingInterceptor;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class SampleCode {
 
-    private final InterceptorChain chain = new InterceptorChain()
-            .interceptor(new AuthRetryInterceptor(null))
-            .interceptor(new LoggingInterceptor())
-            .interceptor(new TimingInterceptor());
-
-    public Integer withSupplier() {
-        return chain.operation("getUsers")
-                .execute(() -> new Integer(1337));
+    private static final List<Interceptor> chain = new LinkedList<>();
+    static {
+        chain.add(new AuthRetryInterceptor(null));
+        chain.add(new LoggingInterceptor());
+        chain.add(new TimingInterceptor());
     }
 
-    public Integer withFunction() {
-        return chain.operation("getUsers")
-                .input(new Integer(123))
-                .execute((Integer input) -> new Integer(1337));
-    }
+    public void test() {
+        String functionResult =  Operation.builder()
+                .operationName("functionOperation")
+                .build()
+                .execute("functional input", (theInput) -> "consume input to produce output");
 
-    public void withRunnable() {
-        chain.operation("getUsers")
-                .execute(() -> {});
-    }
+        String supplierResult = Operation.builder()
+                .build()
+                .execute(() -> "supplier output");
 
-    public void withConsumer() {
-        chain.operation("getUsers")
-                .input(new Integer(1234))
-                .execute((theInput) -> {});
+        Operation.builder()
+                .build()
+                .execute(() -> { /* run some things */ });
+
+        Operation.builder()
+                .build()
+                .execute("consumer input", (input) -> { /* consume the input */ });
     }
 }

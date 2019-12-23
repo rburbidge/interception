@@ -1,20 +1,19 @@
 package com.sirnommington.interception.sample.interceptors;
 
 import com.sirnommington.interception.Interceptor;
+import com.sirnommington.interception.InterceptorOperationContext;
 import com.sirnommington.interception.Operation;
 
-import java.util.function.Function;
-
-public class TimingInterceptor implements Interceptor<Object> {
+public class TimingInterceptor implements Interceptor {
     @Override
-    public <R> R execute(Operation<Object> context, Function<Object, R> operation) {
+    public Void execute(InterceptorOperationContext operation) {
         long startTime = System.nanoTime();
 
         try {
-            return context.execute(operation);
+            return operation.execute();
         } finally {
             long durationMs = (System.nanoTime() - startTime) / 1000000;
-            System.out.println(context.operationName() + " execution time: " + durationMs + "ms");
+            System.out.println(operation.getOperationName() + " execution time: " + durationMs + "ms");
         }
     }
 }

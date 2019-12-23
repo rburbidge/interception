@@ -1,14 +1,16 @@
 package com.sirnommington.interception.sample.interceptors.authretry;
 
-import com.sirnommington.interception.InterceptorChain;
-import com.sirnommington.interception.sample.interceptors.authretry.AuthRetryInterceptor;
-import com.sirnommington.interception.sample.interceptors.authretry.AuthenticatedRequest;
+import com.sirnommington.interception.Interceptor;
+import com.sirnommington.interception.Operation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
@@ -23,10 +25,13 @@ public class AuthRetryInterceptorTest {
     @Mock private AuthenticatedRequest request;
 
     private AuthRetryInterceptor interceptor;
+    private List<Interceptor> interceptors;
 
     @Before
     public void before() {
         interceptor = new AuthRetryInterceptor(tokenProvider);
+        interceptors = new ArrayList<>();
+                interceptors.add(interceptor);
     }
 
     @Test
@@ -34,11 +39,11 @@ public class AuthRetryInterceptorTest {
         when(tokenProvider.getCachedToken()).thenReturn("cachedToken");
         when(operation.apply(any())).thenReturn("result");
 
-        String result = new InterceptorChain()
-                .interceptor(interceptor)
-                .operation("doOperation")
-                .input(request)
-                .execute(operation);
+        String result = Operation.builder()
+                .interceptors(interceptors.iterator())
+                .operationName("doOperation")
+                .build()
+                .execute(request, operation);
 
         verify(tokenProvider).getCachedToken();
         verify(request).setToken("cachedToken");
@@ -54,11 +59,11 @@ public class AuthRetryInterceptorTest {
                 .thenThrow(new AuthRetryInterceptor.AuthenticationException())
                 .thenReturn("result");
 
-        String result = new InterceptorChain()
-                .interceptor(interceptor)
-                .operation("doOperation")
-                .input(request)
-                .execute(operation);
+        String result = Operation.builder()
+                .interceptors(interceptors.iterator())
+                .operationName("doOperation")
+                .build()
+                .execute(request, operation);
 
         verify(tokenProvider).getCachedToken();
         verify(request).setToken("cachedToken");
