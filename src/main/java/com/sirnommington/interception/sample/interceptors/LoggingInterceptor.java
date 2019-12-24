@@ -1,16 +1,14 @@
 package com.sirnommington.interception.sample.interceptors;
 
-import com.sirnommington.interception.Interceptor;
-import com.sirnommington.interception.Operation;
+import com.sirnommington.interception.interceptor.Interceptor;
+import com.sirnommington.interception.interceptor.ContinuableOperation;
 
-import java.util.function.Function;
-
-public class LoggingInterceptor implements Interceptor<Object> {
+public class LoggingInterceptor implements Interceptor {
     @Override
-    public <R> R execute(Operation<Object> context, Function<Object, R> operation) {
-        System.out.println("Begin operation " + context.operationName() + " with input " + context.input());
-        R result = context.execute(operation);
-        System.out.println("End operation " + context.operationName() + " with result " + result);
+    public Object execute(ContinuableOperation operation) {
+        System.out.println("Begin operation " + operation.getOperationName() + " with input " + operation.getInput());
+        Object result = operation.execute();
+        System.out.println("End operation " + operation.getOperationName() + " with result " + result);
         return result;
     }
 }

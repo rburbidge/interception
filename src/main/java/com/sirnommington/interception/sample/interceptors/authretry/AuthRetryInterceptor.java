@@ -1,16 +1,14 @@
 package com.sirnommington.interception.sample.interceptors.authretry;
 
-import com.sirnommington.interception.Interceptor;
-import com.sirnommington.interception.Operation;
+import com.sirnommington.interception.interceptor.Interceptor;
+import com.sirnommington.interception.interceptor.ContinuableOperation;
 import lombok.Data;
-
-import java.util.function.Function;
 
 /**
  * Sets an authentication token on the request, and retries with a new token if the initial request fails.
  */
 @Data
-public class AuthRetryInterceptor implements Interceptor<AuthenticatedRequest> {
+public class AuthRetryInterceptor implements Interceptor {
 
     private final TokenProvider tokenProvider;
 
@@ -19,17 +17,17 @@ public class AuthRetryInterceptor implements Interceptor<AuthenticatedRequest> {
     }
 
     @Override
-    public <R> R execute(
-            Operation<AuthenticatedRequest> context,
-            Function<AuthenticatedRequest, R> operation) {
+    public Object execute(ContinuableOperation operation) {
+        AuthenticatedRequest request = (AuthenticatedRequest)operation.getInput();
+
         try {
             // Try using the cached token
-            context.input().setToken(tokenProvider.getCachedToken());
-            return context.execute(operation);
+            request.setToken(tokenProvider.getCachedToken());
+            return operation.execute();
         } catch(AuthenticationException e) {
             // If that fails, then try using a new token
-            context.input().setToken(tokenProvider.refreshToken());
-            return context.execute(operation);
+            request.setToken(tokenProvider.refreshToken());
+            return operation.execute();
         }
     }
 

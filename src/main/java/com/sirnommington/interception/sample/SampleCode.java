@@ -1,36 +1,33 @@
 package com.sirnommington.interception.sample;
 
-import com.sirnommington.interception.InterceptorChain;
+import com.sirnommington.interception.OperationPipeline;
 import com.sirnommington.interception.sample.interceptors.authretry.AuthRetryInterceptor;
 import com.sirnommington.interception.sample.interceptors.LoggingInterceptor;
 import com.sirnommington.interception.sample.interceptors.TimingInterceptor;
 
 public class SampleCode {
 
-    private final InterceptorChain chain = new InterceptorChain()
+    private static final OperationPipeline pipeline = OperationPipeline.builder()
             .interceptor(new AuthRetryInterceptor(null))
             .interceptor(new LoggingInterceptor())
-            .interceptor(new TimingInterceptor());
+            .interceptor(new TimingInterceptor())
+            .build();
 
-    public Integer withSupplier() {
-        return chain.operation("getUsers")
-                .execute(() -> new Integer(1337));
-    }
+    public void test() {
+        String functionResult =  pipeline.start()
+                .operationName("functionOperation")
+                .execute("functional input", (theInput) -> "consume input to produce output");
 
-    public Integer withFunction() {
-        return chain.operation("getUsers")
-                .input(new Integer(123))
-                .execute((Integer input) -> new Integer(1337));
-    }
+        String supplierResult = pipeline.start()
+                .operationName("supplierOperation")
+                .execute(() -> "supplier output");
 
-    public void withRunnable() {
-        chain.operation("getUsers")
-                .execute(() -> {});
-    }
+        pipeline.start()
+                .operationName("runnableOperation")
+                .execute(() -> { /* run some things */ });
 
-    public void withConsumer() {
-        chain.operation("getUsers")
-                .input(new Integer(1234))
-                .execute((theInput) -> {});
+        pipeline.start()
+                .operationName("consumerOperation")
+                .execute("consumer input", (input) -> { /* consume the input */ });
     }
 }
