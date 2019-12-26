@@ -3,10 +3,11 @@ package com.sirnommington.interception.core;
 import com.sirnommington.interception.ExecutableOperation;
 import com.sirnommington.interception.interceptor.Interceptor;
 import com.sirnommington.interception.interceptor.ContinuableOperation;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -15,14 +16,36 @@ import java.util.function.Supplier;
 public class Operation implements ContinuableOperation, ExecutableOperation {
     private final Iterator<Interceptor> interceptors;
 
-    @Setter
-    private String operationName;
+    private Map<Object, Object> params = new HashMap<>();
 
+    /**
+     * Any input for the operation. Will be provided to func.
+     */
     private Object input;
+
+    /**
+     * The task to run. If a runnable, consumer, or supplier was executed, then it will be wrapped in a function and
+     * assigned here.
+     */
     private Function<Object, Object> func;
 
     public Operation(Iterator<Interceptor> interceptors) {
         this.interceptors = interceptors;
+    }
+
+    ///////////////////////////
+    // OperationBase methods //
+    ///////////////////////////
+
+    @Override
+    public ExecutableOperation param(Object key, Object value) {
+        params.put(key, value);
+        return this;
+    }
+
+    @Override
+    public Object param(Object key) {
+        return params.get(key);
     }
 
     /////////////////////////////////////////
@@ -32,11 +55,6 @@ public class Operation implements ContinuableOperation, ExecutableOperation {
     @Override
     public Object getInput() {
         return input;
-    }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
     }
 
     @Override

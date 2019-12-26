@@ -1,6 +1,7 @@
 package com.sirnommington.interception.sample;
 
 import com.sirnommington.interception.OperationPipeline;
+import com.sirnommington.interception.sample.interceptors.Params;
 import com.sirnommington.interception.sample.interceptors.authretry.AuthRetryInterceptor;
 import com.sirnommington.interception.sample.interceptors.LoggingInterceptor;
 import com.sirnommington.interception.sample.interceptors.TimingInterceptor;
@@ -15,19 +16,19 @@ public class SampleCode {
 
     public void test() {
         String functionResult =  pipeline.start()
-                .operationName("functionOperation")
+                .param(Params.OPERATION_NAME, "functionOperation")
                 .execute("functional input", (theInput) -> "consume input to produce output");
 
         String supplierResult = pipeline.start()
-                .operationName("supplierOperation")
+                .param(Params.OPERATION_NAME, "supplierOperation")
                 .execute(() -> "supplier output");
 
         pipeline.start()
-                .operationName("runnableOperation")
+                .param(Params.OPERATION_NAME, "runnableOperation")
                 .execute(() -> { /* run some things */ });
 
         pipeline.start()
-                .operationName("consumerOperation")
+                .param(Params.OPERATION_NAME, "consumerOperation")
                 .execute("consumer input", (input) -> { /* consume the input */ });
     }
 }

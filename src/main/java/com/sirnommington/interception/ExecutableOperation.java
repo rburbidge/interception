@@ -8,12 +8,7 @@ import java.util.function.Supplier;
  * Configure an operation and then execute it.
  */
 public interface ExecutableOperation {
-    /**
-     * Set the operation name.
-     * @param operationName The operation name.
-     * @return this.
-     */
-    ExecutableOperation operationName(String operationName);
+    ExecutableOperation param(Object key, Object value);
 
     /**
      * Executes a function.
