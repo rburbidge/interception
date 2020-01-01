@@ -1,0 +1,23 @@
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'interception'
+
+    publishedGroupId = 'com.sirnommington'
+    libraryName = 'interception'
+    artifact = 'interception'
+
+    libraryDescription = 'Supports wrapping Java code in interceptor pipelines.'
+
+    siteUrl = 'https://github.com/rburbidge/interception'
+    gitUrl = 'https://github.com/rburbidge/interception.git'
+
+    libraryVersion = '0.0.4'
+
+    developerId = 'rburbidge'
+    developerName = 'Ryan Burbidge'
+    developerEmail = 'foo@bar.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
