@@ -11,8 +11,9 @@ public interface ExecutableOperation {
     /**
      * Gets the operation name.
      * @param name The operation name.
+     * @return this.
      */
-    void operationName(String name);
+    ExecutableOperation operationName(String name);
 
     /**
      * Sets a parameter for the operation.

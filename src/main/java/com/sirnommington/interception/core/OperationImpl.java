@@ -49,8 +49,9 @@ public class OperationImpl implements Operation, ExecutableOperation {
     }
 
     @Override
-    public void operationName(String name) {
+    public ExecutableOperation operationName(String name) {
         param(PARAM_OPERATION_NAME, name);
+        return this;
     }
 
     @Override
