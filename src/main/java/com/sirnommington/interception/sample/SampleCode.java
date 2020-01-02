@@ -1,6 +1,6 @@
 package com.sirnommington.interception.sample;
 
-import com.sirnommington.interception.OperationPipeline;
+import com.sirnommington.interception.InterceptorChain;
 import com.sirnommington.interception.sample.interceptors.Params;
 import com.sirnommington.interception.sample.interceptors.authretry.AuthRetryInterceptor;
 import com.sirnommington.interception.sample.interceptors.LoggingInterceptor;
@@ -8,7 +8,7 @@ import com.sirnommington.interception.sample.interceptors.TimingInterceptor;
 
 public class SampleCode {
 
-    private static final OperationPipeline pipeline = OperationPipeline.builder()
+    private static final InterceptorChain pipeline = InterceptorChain.builder()
             .interceptor(new AuthRetryInterceptor(null))
             .interceptor(new LoggingInterceptor())
             .interceptor(new TimingInterceptor())

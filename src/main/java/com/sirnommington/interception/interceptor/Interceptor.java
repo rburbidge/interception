@@ -6,9 +6,9 @@ package com.sirnommington.interception.interceptor;
  */
 public interface Interceptor {
     /**
-     * Executes some logic surrounding {@link ContinuableOperation#execute()}.
+     * Executes some logic surrounding {@link Operation#execute()}.
      * @param operation The operation.
-     * @return The result of {@link ContinuableOperation#execute()}, or the result of the interceptor.
+     * @return The result of {@link Operation#execute()}, or the result of the interceptor.
      */
-    Object execute(ContinuableOperation operation);
+    Object execute(Operation operation);
 }

@@ -8,6 +8,8 @@ import java.util.function.Supplier;
  * Configure an operation and then execute it.
  */
 public interface ExecutableOperation {
+    void operationName(String name);
+
     ExecutableOperation param(Object key, Object value);
 
     /**

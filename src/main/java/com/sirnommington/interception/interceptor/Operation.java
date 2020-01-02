@@ -3,8 +3,10 @@ package com.sirnommington.interception.interceptor;
 /**
  * An operation from the perspective of an interceptor.
  */
-public interface ContinuableOperation {
+public interface Operation {
     Object param(Object key);
+
+    String operationName();
 
     /**
      * The operation input. May be null.

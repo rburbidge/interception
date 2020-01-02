@@ -1,6 +1,6 @@
 package com.sirnommington.interception.sample.interceptors.authretry;
 
-import com.sirnommington.interception.OperationPipeline;
+import com.sirnommington.interception.InterceptorChain;
 import com.sirnommington.interception.sample.interceptors.Params;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,12 +22,12 @@ public class AuthRetryInterceptorTest {
     @Mock private AuthenticatedRequest request;
 
     private AuthRetryInterceptor interceptor;
-    private OperationPipeline pipeline;
+    private InterceptorChain pipeline;
 
     @Before
     public void before() {
         interceptor = new AuthRetryInterceptor(tokenProvider);
-        pipeline = OperationPipeline.builder()
+        pipeline = InterceptorChain.builder()
                 .interceptor(interceptor)
                 .build();
     }

@@ -2,8 +2,7 @@ package com.sirnommington.interception.core;
 
 import com.sirnommington.interception.ExecutableOperation;
 import com.sirnommington.interception.interceptor.Interceptor;
-import com.sirnommington.interception.interceptor.ContinuableOperation;
-import lombok.experimental.Accessors;
+import com.sirnommington.interception.interceptor.Operation;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,11 +11,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-@Accessors(fluent = true)
-public class Operation implements ContinuableOperation, ExecutableOperation {
+public class OperationImpl implements Operation, ExecutableOperation {
     private final Iterator<Interceptor> interceptors;
 
     private Map<Object, Object> params = new HashMap<>();
+
+    private static final String PARAM_OPERATION_NAME = OperationImpl.class.getName() + ".operationName";
 
     /**
      * Any input for the operation. Will be provided to func.
@@ -29,13 +29,13 @@ public class Operation implements ContinuableOperation, ExecutableOperation {
      */
     private Function<Object, Object> func;
 
-    public Operation(Iterator<Interceptor> interceptors) {
+    public OperationImpl(Iterator<Interceptor> interceptors) {
         this.interceptors = interceptors;
     }
 
-    ///////////////////////////
-    // OperationBase methods //
-    ///////////////////////////
+    ///////////////////////
+    // Parameter methods //
+    ///////////////////////
 
     @Override
     public ExecutableOperation param(Object key, Object value) {
@@ -48,9 +48,15 @@ public class Operation implements ContinuableOperation, ExecutableOperation {
         return params.get(key);
     }
 
-    /////////////////////////////////////////
-    // InterceptorOperationContext methods //
-    /////////////////////////////////////////
+    @Override
+    public void operationName(String name) {
+        param(PARAM_OPERATION_NAME, name);
+    }
+
+    @Override
+    public String operationName() {
+        return (String) param(PARAM_OPERATION_NAME);
+    }
 
     @Override
     public Object getInput() {
