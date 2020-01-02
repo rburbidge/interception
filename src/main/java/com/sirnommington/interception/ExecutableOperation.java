@@ -8,8 +8,18 @@ import java.util.function.Supplier;
  * Configure an operation and then execute it.
  */
 public interface ExecutableOperation {
+    /**
+     * Gets the operation name.
+     * @param name The operation name.
+     */
     void operationName(String name);
 
+    /**
+     * Sets a parameter for the operation.
+     * @param key The param key.
+     * @param value The param value.
+     * @return this.
+     */
     ExecutableOperation param(Object key, Object value);
 
     /**
