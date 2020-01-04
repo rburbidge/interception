@@ -11,7 +11,7 @@ ext {
     siteUrl = 'https://github.com/rburbidge/interception'
     gitUrl = 'https://github.com/rburbidge/interception.git'
 
-    libraryVersion = '0.0.4'
+    libraryVersion = '0.0.6'
 
     developerId = 'rburbidge'
     developerName = 'Ryan Burbidge'

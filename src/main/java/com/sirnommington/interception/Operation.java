@@ -1,14 +1,21 @@
-package com.sirnommington.interception.interceptor;
+package com.sirnommington.interception;
 
 /**
  * An operation from the perspective of an interceptor.
  */
-public interface ContinuableOperation {
+public interface Operation {
     /**
-     * The operation name.
+     * Gets the operation name.
      * @return The operation name.
      */
-    String getOperationName();
+    String name();
+
+    /**
+     * Gets a parameter.
+     * @param key The parameter key.
+     * @return The value.
+     */
+    Object param(Object key);
 
     /**
      * The operation input. May be null.

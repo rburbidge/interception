@@ -1,7 +1,7 @@
 package com.sirnommington.interception.sample.interceptors.authretry;
 
-import com.sirnommington.interception.interceptor.Interceptor;
-import com.sirnommington.interception.interceptor.ContinuableOperation;
+import com.sirnommington.interception.Interceptor;
+import com.sirnommington.interception.Operation;
 import lombok.Data;
 
 /**
@@ -17,7 +17,7 @@ public class AuthRetryInterceptor implements Interceptor {
     }
 
     @Override
-    public Object execute(ContinuableOperation operation) {
+    public Object execute(Operation operation) {
         AuthenticatedRequest request = (AuthenticatedRequest)operation.getInput();
 
         try {

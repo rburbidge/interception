@@ -1,14 +1,14 @@
 package com.sirnommington.interception.sample.interceptors;
 
-import com.sirnommington.interception.interceptor.Interceptor;
-import com.sirnommington.interception.interceptor.ContinuableOperation;
+import com.sirnommington.interception.Interceptor;
+import com.sirnommington.interception.Operation;
 
 public class LoggingInterceptor implements Interceptor {
     @Override
-    public Object execute(ContinuableOperation operation) {
-        System.out.println("Begin operation " + operation.getOperationName() + " with input " + operation.getInput());
+    public Object execute(Operation operation) {
+        System.out.println("Begin operation " + operation.name() + " with input " + operation.getInput());
         Object result = operation.execute();
-        System.out.println("End operation " + operation.getOperationName() + " with result " + result);
+        System.out.println("End operation " + operation.name() + " with result " + result);
         return result;
     }
 }

@@ -9,11 +9,19 @@ import java.util.function.Supplier;
  */
 public interface ExecutableOperation {
     /**
-     * Set the operation name.
-     * @param operationName The operation name.
+     * Sets the operation name.
+     * @param name The operation name.
      * @return this.
      */
-    ExecutableOperation operationName(String operationName);
+    ExecutableOperation name(String name);
+
+    /**
+     * Sets a parameter for the operation.
+     * @param key The param key.
+     * @param value The param value.
+     * @return this.
+     */
+    ExecutableOperation param(Object key, Object value);
 
     /**
      * Executes a function.

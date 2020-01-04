@@ -1,42 +1,67 @@
 package com.sirnommington.interception.core;
 
 import com.sirnommington.interception.ExecutableOperation;
-import com.sirnommington.interception.interceptor.Interceptor;
-import com.sirnommington.interception.interceptor.ContinuableOperation;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import com.sirnommington.interception.Interceptor;
+import com.sirnommington.interception.Operation;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-@Accessors(fluent = true)
-public class Operation implements ContinuableOperation, ExecutableOperation {
+public class OperationImpl implements Operation, ExecutableOperation {
     private final Iterator<Interceptor> interceptors;
 
-    @Setter
-    private String operationName;
+    private Map<Object, Object> params = new HashMap<>();
 
+    private static final String PARAM_KEY_OPERATION_NAME = OperationImpl.class.getName() + ".operationName";
+
+    /**
+     * Any input for the operation. Will be provided to func.
+     */
     private Object input;
+
+    /**
+     * The task to run. If a runnable, consumer, or supplier was executed, then it will be wrapped in a function and
+     * assigned here.
+     */
     private Function<Object, Object> func;
 
-    public Operation(Iterator<Interceptor> interceptors) {
+    public OperationImpl(Iterator<Interceptor> interceptors) {
         this.interceptors = interceptors;
     }
 
-    /////////////////////////////////////////
-    // InterceptorOperationContext methods //
-    /////////////////////////////////////////
+    ///////////////////////
+    // Parameter methods //
+    ///////////////////////
+
+    @Override
+    public ExecutableOperation param(Object key, Object value) {
+        params.put(key, value);
+        return this;
+    }
+
+    @Override
+    public Object param(Object key) {
+        return params.get(key);
+    }
+
+    @Override
+    public ExecutableOperation name(String name) {
+        param(PARAM_KEY_OPERATION_NAME, name);
+        return this;
+    }
+
+    @Override
+    public String name() {
+        return (String) param(PARAM_KEY_OPERATION_NAME);
+    }
 
     @Override
     public Object getInput() {
         return input;
-    }
-
-    @Override
-    public String getOperationName() {
-        return operationName;
     }
 
     @Override

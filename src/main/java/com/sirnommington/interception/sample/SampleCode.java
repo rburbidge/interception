@@ -1,13 +1,13 @@
 package com.sirnommington.interception.sample;
 
-import com.sirnommington.interception.OperationPipeline;
+import com.sirnommington.interception.InterceptorChain;
 import com.sirnommington.interception.sample.interceptors.authretry.AuthRetryInterceptor;
 import com.sirnommington.interception.sample.interceptors.LoggingInterceptor;
 import com.sirnommington.interception.sample.interceptors.TimingInterceptor;
 
 public class SampleCode {
 
-    private static final OperationPipeline pipeline = OperationPipeline.builder()
+    private static final InterceptorChain pipeline = InterceptorChain.builder()
             .interceptor(new AuthRetryInterceptor(null))
             .interceptor(new LoggingInterceptor())
             .interceptor(new TimingInterceptor())
@@ -15,19 +15,19 @@ public class SampleCode {
 
     public void test() {
         String functionResult =  pipeline.start()
-                .operationName("functionOperation")
+                .name("functionOperation")
                 .execute("functional input", (theInput) -> "consume input to produce output");
 
         String supplierResult = pipeline.start()
-                .operationName("supplierOperation")
+                .name("supplierOperation")
                 .execute(() -> "supplier output");
 
         pipeline.start()
-                .operationName("runnableOperation")
+                .name("runnableOperation")
                 .execute(() -> { /* run some things */ });
 
         pipeline.start()
-                .operationName("consumerOperation")
+                .name("consumerOperation")
                 .execute("consumer input", (input) -> { /* consume the input */ });
     }
 }
