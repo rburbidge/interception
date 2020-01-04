@@ -27,14 +27,14 @@ public class OperationImplTest {
 
     @Test
     public void operationName_isInitiallyNull() {
-        assertNull(operation.operationName());
+        assertNull(operation.name());
     }
 
     @Test
     public void operationName_setsAndGetsOperationName() {
         String expectedOperationName = "theOperationName";
-        operation.operationName(expectedOperationName);
-        assertEquals(expectedOperationName, operation.operationName());
+        operation.name(expectedOperationName);
+        assertEquals(expectedOperationName, operation.name());
     }
 
     @Test

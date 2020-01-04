@@ -1,7 +1,6 @@
 package com.sirnommington.interception.sample.interceptors.authretry;
 
 import com.sirnommington.interception.InterceptorChain;
-import com.sirnommington.interception.sample.interceptors.Params;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +37,7 @@ public class AuthRetryInterceptorTest {
         when(operation.apply(any())).thenReturn("result");
 
         String result = pipeline.start()
-                .param(Params.OPERATION_NAME, "doOperation")
+                .name("doOperation")
                 .execute(request, operation);
 
         verify(tokenProvider).getCachedToken();
@@ -56,7 +55,7 @@ public class AuthRetryInterceptorTest {
                 .thenReturn("result");
 
         String result = pipeline.start()
-                .param(Params.OPERATION_NAME, "doOperation")
+                .name("doOperation")
                 .execute(request, operation);
 
         verify(tokenProvider).getCachedToken();

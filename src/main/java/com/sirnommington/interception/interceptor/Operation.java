@@ -8,7 +8,7 @@ public interface Operation {
      * Gets the operation name.
      * @return The operation name.
      */
-    String operationName();
+    String name();
 
     /**
      * Gets a parameter.

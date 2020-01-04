@@ -49,13 +49,13 @@ public class OperationImpl implements Operation, ExecutableOperation {
     }
 
     @Override
-    public ExecutableOperation operationName(String name) {
+    public ExecutableOperation name(String name) {
         param(PARAM_OPERATION_NAME, name);
         return this;
     }
 
     @Override
-    public String operationName() {
+    public String name() {
         return (String) param(PARAM_OPERATION_NAME);
     }
 
