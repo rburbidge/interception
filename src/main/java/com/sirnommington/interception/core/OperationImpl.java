@@ -16,7 +16,7 @@ public class OperationImpl implements Operation, ExecutableOperation {
 
     private Map<Object, Object> params = new HashMap<>();
 
-    private static final String PARAM_OPERATION_NAME = OperationImpl.class.getName() + ".operationName";
+    private static final String PARAM_KEY_OPERATION_NAME = OperationImpl.class.getName() + ".operationName";
 
     /**
      * Any input for the operation. Will be provided to func.
@@ -50,13 +50,13 @@ public class OperationImpl implements Operation, ExecutableOperation {
 
     @Override
     public ExecutableOperation name(String name) {
-        param(PARAM_OPERATION_NAME, name);
+        param(PARAM_KEY_OPERATION_NAME, name);
         return this;
     }
 
     @Override
     public String name() {
-        return (String) param(PARAM_OPERATION_NAME);
+        return (String) param(PARAM_KEY_OPERATION_NAME);
     }
 
     @Override
