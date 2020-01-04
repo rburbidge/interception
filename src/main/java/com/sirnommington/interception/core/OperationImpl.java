@@ -1,8 +1,8 @@
 package com.sirnommington.interception.core;
 
 import com.sirnommington.interception.ExecutableOperation;
-import com.sirnommington.interception.interceptor.Interceptor;
-import com.sirnommington.interception.interceptor.Operation;
+import com.sirnommington.interception.Interceptor;
+import com.sirnommington.interception.Operation;
 
 import java.util.HashMap;
 import java.util.Iterator;

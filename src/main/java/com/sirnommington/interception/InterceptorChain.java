@@ -1,7 +1,6 @@
 package com.sirnommington.interception;
 
 import com.sirnommington.interception.core.OperationImpl;
-import com.sirnommington.interception.interceptor.Interceptor;
 import lombok.Builder;
 import lombok.Singular;
 

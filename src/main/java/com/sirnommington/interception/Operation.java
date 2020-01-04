@@ -1,4 +1,4 @@
-package com.sirnommington.interception.interceptor;
+package com.sirnommington.interception;
 
 /**
  * An operation from the perspective of an interceptor.

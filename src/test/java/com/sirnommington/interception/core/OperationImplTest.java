@@ -1,7 +1,7 @@
-package com.sirnommington.interception.sample.interceptors.authretry;
+package com.sirnommington.interception.core;
 
 import com.sirnommington.interception.core.OperationImpl;
-import com.sirnommington.interception.interceptor.Interceptor;
+import com.sirnommington.interception.Interceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

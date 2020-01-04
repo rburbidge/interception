@@ -1,7 +1,7 @@
 package com.sirnommington.interception.sample.interceptors;
 
-import com.sirnommington.interception.interceptor.Interceptor;
-import com.sirnommington.interception.interceptor.Operation;
+import com.sirnommington.interception.Interceptor;
+import com.sirnommington.interception.Operation;
 
 public class TimingInterceptor implements Interceptor {
     @Override
