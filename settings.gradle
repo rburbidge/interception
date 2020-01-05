@@ -7,4 +7,10 @@
  * in the user manual at https://docs.gradle.org/6.0.1/userguide/multi_project_builds.html
  */
 
-rootProject.name = 'interception'
+rootProject.name = 'interception-root'
+
+include 'samples'
+project(':samples').name = 'interception-samples'
+
+include 'lib'
+project(':lib').name = 'interception'
