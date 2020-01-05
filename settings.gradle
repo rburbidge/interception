@@ -8,3 +8,9 @@
  */
 
 rootProject.name = 'interception'
+
+include 'samples'
+project(':samples').name = 'interception-samples'
+
+include 'lib'
+project(':lib').name = 'interception-lib'

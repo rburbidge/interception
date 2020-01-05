@@ -1,4 +1,4 @@
-package com.sirnommington.interception.sample.interceptors;
+package com.sirnommington.interception.samples.interceptors;
 
 import com.sirnommington.interception.Interceptor;
 import com.sirnommington.interception.Operation;

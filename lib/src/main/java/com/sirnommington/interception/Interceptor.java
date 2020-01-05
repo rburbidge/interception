@@ -2,7 +2,6 @@ package com.sirnommington.interception;
 
 /**
  * An interceptor.
- * See {@link com.sirnommington.interception.sample} for samples.
  */
 public interface Interceptor {
     /**

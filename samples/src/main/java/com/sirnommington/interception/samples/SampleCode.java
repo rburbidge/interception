@@ -1,9 +1,9 @@
-package com.sirnommington.interception.sample;
+package com.sirnommington.interception.samples;
 
 import com.sirnommington.interception.InterceptorChain;
-import com.sirnommington.interception.sample.interceptors.authretry.AuthRetryInterceptor;
-import com.sirnommington.interception.sample.interceptors.LoggingInterceptor;
-import com.sirnommington.interception.sample.interceptors.TimingInterceptor;
+import com.sirnommington.interception.samples.interceptors.authretry.AuthRetryInterceptor;
+import com.sirnommington.interception.samples.interceptors.LoggingInterceptor;
+import com.sirnommington.interception.samples.interceptors.TimingInterceptor;
 
 public class SampleCode {
 
