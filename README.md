@@ -43,7 +43,8 @@ divideBy2 execution time: 10263ns
 divideBy2 ending with result 1
 ```
 
-See [Logging.java](./samples/src/main/java/com/sirnommington/interception/samples/Logging.java) for the complete example.
+See [LoggingAndTiming.java](./samples/src/main/java/com/sirnommington/interception/samples/LoggingAndTiming.java) for
+a complete example.
 
 ## Why this exists
 
@@ -63,11 +64,12 @@ Or in Interception terms:
 3. Execute multiple operations with each `InterceptorChain`.
 
 ## How it works
-See [HowItWorks.java](./samples/src/main/java/com/sirnommington/interception/samples/HowItWorks.java) for the complete example.
+See [HowItWorks.java](./samples/src/main/java/com/sirnommington/interception/samples/HowItWorks.java) for a complete
+example.
 
 Let's say we have an `EnterExitInterceptor` that logs `"Enter <name>"` and `"Exit <name>"` on begin/end...
 
-Then we create the following `InterceptorChain`, and execute it...
+Then we create an `InterceptorChain`, and execute it...
 ```java
 InterceptorChain chain = InterceptorChain.builder()
         .interceptor(new EnterExitInterceptor("A"))
@@ -89,7 +91,7 @@ Exit B
 Exit A
 ```
 
-Given this implementation of the `EnterExitInterceptor`.
+Given this `EnterExitInterceptor`.
 ```java
 class EnterExitInterceptor implements Interceptor {
     private final String name;

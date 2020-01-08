@@ -4,7 +4,7 @@ import com.sirnommington.interception.InterceptorChain;
 import com.sirnommington.interception.samples.interceptors.LoggingInterceptor;
 import com.sirnommington.interception.samples.interceptors.TimingInterceptor;
 
-public class Logging {
+public class LoggingAndTiming {
     public static void example() {
         InterceptorChain chain = InterceptorChain.builder()
                 .interceptor(new LoggingInterceptor())

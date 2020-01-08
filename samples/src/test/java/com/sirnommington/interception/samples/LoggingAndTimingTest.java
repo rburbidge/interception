@@ -6,9 +6,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class LoggingTest {
+public class LoggingAndTimingTest {
     @Test
     public void example() {
-        Logging.example();
+        LoggingAndTiming.example();
     }
 }
