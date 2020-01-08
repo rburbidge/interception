@@ -4,7 +4,6 @@ import com.sirnommington.interception.Interceptor;
 import com.sirnommington.interception.Operation;
 
 public class TimingInterceptor implements Interceptor {
-    @Override
     public Object execute(Operation operation) {
         long startTime = System.nanoTime();
 

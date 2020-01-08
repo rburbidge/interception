@@ -4,7 +4,6 @@ import com.sirnommington.interception.Interceptor;
 import com.sirnommington.interception.Operation;
 
 public class LoggingInterceptor implements Interceptor {
-    @Override
     public Object execute(Operation operation) {
         System.out.println("Begin operation " + operation.name() + " with input " + operation.getInput());
         Object result = operation.execute();

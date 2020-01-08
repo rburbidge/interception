@@ -1,10 +1,68 @@
-# interception
-Supports wrapping Java code in interceptor pipelines.
+# Interception
+Interception is a tool for wrapping code in common interceptor pipelines.
 
-Interception lets you create interceptor chains to perform operations around you code.
+## Why this exists
+
+Software projects often have several similar blocks of code (e.g. API calls to services) that we wrap in other code for
+things like logging, authentication, retries, metrics, more logging. This wrapping code often evolves over time, and it
+often involves the use of several different frameworks. This results in a large hunk of code that ends up working in
+some cases, but not others.
+
+Interception aims to solve this problem by.
+1. Separate the (often unrelated) wrapping code and abstract it into a common interface.
+2. Create reusable pipelines (we call "chains") of wrapping code.
+3. Executing operations with said chains.
+
+Or in Interception terms:
+1. Separate and abstract wrapping code into [Interceptors](./lib/src/main/java/com/sirnommington/interception/Interceptor.java).
+2. Compose a set of `Interceptor`s into one or more [InterceptorChains](./lib/src/main/java/com/sirnommington/interception/InterceptorChain.java).
+3. Execute multiple operations with each `InterceptorChain`.
+
+## How it works
+See [HowItWorks.java](./samples/src/main/java/com/sirnommington/interception/samples/HowItWorks.java) for the complete example.
+
+Let's say we have an `EnterExitInterceptor` that logs `"Enter <name>"` and `"Exit <name>"` on begin/end...
+
+Then we create the following `InterceptorChain`, and execute it...
+```java
+InterceptorChain chain = InterceptorChain.builder()
+        .interceptor(new EnterExitInterceptor("A"))
+        .interceptor(new EnterExitInterceptor("B"))
+        .interceptor(new EnterExitInterceptor("C"))
+        .build();
+
+chain.start().execute(() -> { System.out.println("Do some work"); });
+```
+
+We get the following output:
+```
+Enter A
+Enter B
+Enter C
+Do some work
+Exit C
+Exit B
+Exit A
+```
+
+Given this implementation of the `EnterExitInterceptor`.
+```java
+class EnterExitInterceptor implements Interceptor {
+    private final String name;
+
+    public EnterExitInterceptor(String name) { this.name = name; }
+    
+    public Object execute(Operation operation) {
+        System.out.println("Enter " + this.name);
+        Object result = operation.execute();
+        System.out.println("Exit " + this.name);
+        return result;
+    }
+}
+```
 
 ## Interceptor chains
-Define simple or complex pipelines around your code.
+Define simple or complex pipelines:
 ```java
 private static final InterceptorChain chain = InterceptorChain.builder()
             .interceptor(new AuthRetryInterceptor(authProvider))
@@ -23,51 +81,37 @@ chain.start()
     });
 ```
 
-## How it works
-If we have the following chain of interceptors that each print enter/exit statements around the work to be executed...
-```java
-private static final InterceptorChain chain = InterceptorChain.builder()
-            .interceptor(new MyInterceptor("A"))
-            .interceptor(new MyInterceptor("B"))
-            .interceptor(new MyInterceptor("C"))
-            .build();
-            
-chain.execute(() -> { System.out.println("Do some work"); });
-```
+## Parameters for `Interceptor/InterceptorChain`s
 
-Then we get the following output:
-```
-Enter A
-Enter B
-Enter C
-Do some work
-Exit C
-Exit B
-Exit A
-```
+You can provide parameters to the `Interceptors` when starting the operation.
 
 ```java
-class MyInterceptor implements Interceptor {
-    private final String name;
-    MyInterceptor(String name) {
-        this.name = name;
-    }
+chain.start()
+        .name("getKetchup")
+        .param("userId", 666)
+        .param("ketchupType", "garlic")
+        .execute()
+````
 
+Access these params within an `Interceptor`. Note that `operationName` is accessed via a unique method:
+```java
+class KetchupInterceptor implements Interceptor {
     @Override
     public Object execute(Operation operation) {
-        System.out.println("Enter " + this.name);
-        Object result = operation.execute();
-        System.out.println("Exit " + this.name);
-        return result;
+        Integer userId = (Integer) operation.param("userId");
+        String ketchupType = (String) operation.param("ketchupType");        
+ 
+        System.out.println("User " + userId + " is doing " + operation.name() + " with " + ketchupType)        
+
+        return operation.execute();
     }
 }
 ```
 
-# Interceptors
-## Begin/end logging
+## Interceptor use cases
+### Begin/end logging
 ```java
 class LoggingInterceptor implements Interceptor {
-    @Override
     public Object execute(Operation operation) {
         System.out.println("Begin operation " + operation.name() + " with input " + operation.getInput());
         Object result = operation.execute();
