@@ -10,8 +10,8 @@ public class TimingInterceptor implements Interceptor {
         try {
             return operation.execute();
         } finally {
-            long durationMs = (System.nanoTime() - startTime) / 1000000;
-            System.out.println(operation.name() + " execution time: " + durationMs + "ms");
+            long durationMs = (System.nanoTime() - startTime);
+            System.out.println(operation.name() + " execution time: " + durationMs + "ns");
         }
     }
 }

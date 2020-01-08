@@ -1,5 +1,49 @@
 # Interception
-Interception is a tool for wrapping code in common interceptor pipelines.
+Interception is a library for addressing cross-cutting concerns in Java apps. Create interceptor chains and execute them
+across common code operations.
+
+Here is a logging interceptor that logs begin and end.
+```java
+public class LoggingInterceptor implements Interceptor {
+    public Object execute(Operation operation) {
+        System.out.println(operation.name() + " starting with input " + operation.getInput());
+        Object result = operation.execute();
+        System.out.println(operation.name() + " ending with result " + result);
+        return result;
+    }
+}
+```
+
+# Getting started
+
+The above `LoggingInterceptor` can chained with a `TimingInterceptor` to log and time different operations.
+```java
+
+InterceptorChain chain = InterceptorChain.builder()
+                .interceptor(new LoggingInterceptor())
+                .interceptor(new TimingInterceptor())
+                .build();
+
+int multiplyResult = chain.start()
+        .name("multiplyBy2")
+        .execute(2, num -> num * 2);
+
+int divideResult = chain.start()
+        .name("divideBy2")
+        .execute(2, num -> num / 2);
+```
+
+Resulting in this output.
+```java
+multiplyBy2 starting with input 2
+multiplyBy2 execution time: 20922ns
+multiplyBy2 ending with result 4
+divideBy2 starting with input 2
+divideBy2 execution time: 10263ns
+divideBy2 ending with result 1
+```
+
+See [Logging.java](./samples/src/main/java/com/sirnommington/interception/samples/Logging.java) for the complete example.
 
 ## Why this exists
 
