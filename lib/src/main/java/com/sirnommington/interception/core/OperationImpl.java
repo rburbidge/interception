@@ -106,7 +106,7 @@ public class OperationImpl implements Operation, ExecutableOperation {
 
     private  <T, R> R executeImpl(T input, Function<T, R> func) {
         this.input = input;
-        this.func = (objInput) -> func.apply((T) objInput);
+        this.func = (theInput) -> func.apply((T) theInput);
 
         return (R) execute();
     }
