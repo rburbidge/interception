@@ -14,9 +14,19 @@ public class LoggingInterceptor implements Interceptor {
 }
 ```
 
+Interception can be used to abstract and implement pipelines code, including:
+* Logging
+* Instrumentation
+* Retries
+* Rate limiting
+* Auth
+* Validation
+* Modification of input/output
+* ... basically anything that wraps code!
+
 # Getting started
 
-The above `LoggingInterceptor` can chained with a `TimingInterceptor` to log and time different operations.
+The above `LoggingInterceptor` can be chained with a `TimingInterceptor` to log and time different operations.
 ```java
 
 InterceptorChain chain = InterceptorChain.builder()
@@ -43,8 +53,7 @@ divideBy2 execution time: 10263ns
 divideBy2 ending with result 1
 ```
 
-See [LoggingAndTiming.java](./samples/src/main/java/com/sirnommington/interception/samples/LoggingAndTiming.java) for
-a complete example.
+See [LoggingAndTiming.java](./samples/src/main/java/com/sirnommington/interception/samples/LoggingAndTiming.java).
 
 ## Why this exists
 
@@ -64,12 +73,9 @@ Or in Interception terms:
 3. Execute multiple operations with each `InterceptorChain`.
 
 ## How it works
-See [HowItWorks.java](./samples/src/main/java/com/sirnommington/interception/samples/HowItWorks.java) for a complete
-example.
+Let's say we have an `EnterExitInterceptor` that logs `"Enter <name>"` and `"Exit <name>"` on begin/end.
 
-Let's say we have an `EnterExitInterceptor` that logs `"Enter <name>"` and `"Exit <name>"` on begin/end...
-
-Then we create an `InterceptorChain`, and execute it...
+Then we create an `InterceptorChain`, and execute it.
 ```java
 InterceptorChain chain = InterceptorChain.builder()
         .interceptor(new EnterExitInterceptor("A"))
@@ -80,7 +86,7 @@ InterceptorChain chain = InterceptorChain.builder()
 chain.start().execute(() -> { System.out.println("Do some work"); });
 ```
 
-We get the following output:
+We get the following output.
 ```
 Enter A
 Enter B
@@ -107,6 +113,8 @@ class EnterExitInterceptor implements Interceptor {
 }
 ```
 
+See [HowItWorks.java](./samples/src/main/java/com/sirnommington/interception/samples/HowItWorks.java).
+
 ## Interceptor chains
 Define simple or complex pipelines:
 ```java
@@ -127,32 +135,44 @@ chain.start()
     });
 ```
 
-## Parameters for `Interceptor/InterceptorChain`s
+## Providing data to Interceptors
 
 You can provide parameters to the `Interceptors` when starting the operation.
 
 ```java
-chain.start()
+int count = chain.start()
         .name("getKetchup")
-        .param("userId", 666)
-        .param("ketchupType", "garlic")
-        .execute()
+        .param("userId", 8317)
+        .execute(() -> /* get the ketchup */ 20);
+
+chain.start()
+        .name("addKetchup")
+        .param("userId", 2485)
+        .execute(() -> /* add the ketchup */ {});
 ````
 
-Access these params within an `Interceptor`. Note that `operationName` is accessed via a unique method:
+And then access them in an `Interceptor` using `operation.param(key)`. For operation name, use `operation.name()`.
 ```java
 class KetchupInterceptor implements Interceptor {
-    @Override
-    public Object execute(Operation operation) {
-        Integer userId = (Integer) operation.param("userId");
-        String ketchupType = (String) operation.param("ketchupType");        
- 
-        System.out.println("User " + userId + " is doing " + operation.name() + " with " + ketchupType)        
+        @Override
+        public Object execute(Operation operation) {
+            Integer userId = (Integer) operation.param("userId");
 
-        return operation.execute();
+            System.out.println(operation.name() + " called by user " + userId);
+
+            return operation.execute();
+        }
     }
-}
 ```
+
+This results in the following output.
+
+```
+getKetchup called by user 8317
+addKetchup called by user 2485
+```
+
+See [InterceptorParameters.java](./samples/src/main/java/com/sirnommington/interception/samples/InterceptorParameters.java).
 
 ## Interceptor use cases
 ### Begin/end logging
